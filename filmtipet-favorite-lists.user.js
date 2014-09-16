@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name       Filmtipset favorite lists
-// @namespace  http://userscripts.org/users/121410
+// @namespace  https://github.com/Row/filmtipset-userscripts
 // @version    0.1
 // @description Makes it possible to highligt movies that are present in pre-selected lists.
 // @match      http://nyheter24.se/filmtipset/*

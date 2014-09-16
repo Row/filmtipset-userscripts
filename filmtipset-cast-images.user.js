@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Filmtipset Cast Images
-// @namespace      none
+// @namespace      https://github.com/Row/filmtipset-userscripts
 // @description    Displays small cast images on each movie page on filmtipset.se
 //                 Firefox about:config network.http.sendRefererHeader must be set to 1,
 //                 or else imdb's image server will block your requests.

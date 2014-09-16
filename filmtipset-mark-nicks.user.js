@@ -2,7 +2,7 @@
 // @name           Filmtipset mark nicks.
 // @version        0.1.1
 // @description  Mark your own and friends names with a little square.
-// @namespace  http://userscripts.org/users/121410
+// @namespace  https://github.com/Row/filmtipset-userscripts
 // @include        http://nyheter24.se/filmtipset/*
 // ==/UserScript==
 
