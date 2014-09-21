@@ -237,7 +237,8 @@ function renderMarkers(lists) {
 /* Init and render */
 addStyle(
     '#favoriteLists {padding: 3px; margin: 1px 0;}'
-    + '#favoriteLists>li {list-type: none; display: block;padding:2px}'
+    + '#favoriteLists>li {list-type: none; display: block;padding:2px;position:relative;}'
+    + '#favoriteLists .delete {position:absolute;right:0}'
     + '.in-list{z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute;top: 3px;margin-left: 300px;}'
     
 );
