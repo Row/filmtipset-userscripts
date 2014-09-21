@@ -27,25 +27,6 @@ Array.prototype.unique = function() {
   return a;
 };
 
-/**
- * Add css style to the document.
- */
-function addStyle(css) {
-  var head, style;
-  head = document.getElementsByTagName('head')[0];
-  if (!head) {
-    return;
-  }
-  style = document.createElement('style');
-  style.type = 'text/css';
-  try {
-    style.innerHTML = css;
-  } catch (err) {
-    style.innerText = css;
-  }
-  head.appendChild(style);
-}
-
 function ListHandler() {
   var STORAGE_KEY = "filmtipsetLists",
     lists,
@@ -236,7 +217,7 @@ function renderMarkers(lists) {
 }
 
 /* Init and render */
-addStyle(
+GM_addStyle(
     '#favoriteLists {padding: 3px; margin: 1px 0;}'
     + '#favoriteLists>li {display: block;padding:4px;position:relative;}'
     + '#favoriteLists .delete {position:absolute;right:0;top:0;}'
