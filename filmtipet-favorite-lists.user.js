@@ -208,7 +208,8 @@ function renderList(list) {
     if (!lists.hasOwnProperty(listId))
       continue;
     var l = lists[listId];
-      var li = $('<li>').text(l.title).css('border-left', '10px solid ' + l.color).appendTo(ul);
+    var li = $('<li>').text(l.title).appendTo(ul);
+    $('<div class="in-list-admin"></div>').css('background', l.color).prependTo(li);
     $('<button class="delete">X</button>').data("listId", listId).appendTo(li);
   }
 
@@ -237,10 +238,11 @@ function renderMarkers(lists) {
 /* Init and render */
 addStyle(
     '#favoriteLists {padding: 3px; margin: 1px 0;}'
-    + '#favoriteLists>li {list-type: none; display: block;padding:2px;position:relative;}'
-    + '#favoriteLists .delete {position:absolute;right:0}'
-    + '.in-list{z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute;top: 3px;margin-left: 300px;}'
-    
+    + '#favoriteLists>li {display: block;padding:4px;position:relative;}'
+    + '#favoriteLists .delete {position:absolute;right:0;top:0;}'
+    + '.in-list, .in-list-admin {z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute}'
+    + '.in-list {margin-left: 300px;top: 3px;}'
+    + '.in-list-admin {margin-left: -12px; top:6px;}'
 );
 
 var list = new ListHandler();
