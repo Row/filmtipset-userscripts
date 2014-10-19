@@ -100,11 +100,18 @@ function ListHandler() {
         }
       }
     };
-    
+
   /**
-   * Public 
-   */ 
+   * Public
+   */
   this.getLists = function() {
+  for (listId in lists) {
+     if (!lists.hasOwnProperty(listId))
+       continue;
+
+     lists[listId].url = generateListUrl(listId, lists[listId].memberId, 1);
+
+    }
     return lists;
   };
 
@@ -189,7 +196,8 @@ function renderList(list) {
     if (!lists.hasOwnProperty(listId))
       continue;
     var l = lists[listId];
-    var li = $('<li>').text(l.title).appendTo(ul);
+    var li = $('<li class="rightlink">').appendTo(ul);
+    $('<a>').text(l.title).attr('href', l.url).appendTo(li);
     $('<div class="in-list-admin"></div>').css('background', l.color).prependTo(li);
     $('<button class="delete">X</button>').data("listId", listId).appendTo(li);
   }
@@ -202,24 +210,24 @@ function renderMarkers(lists) {
     for (listId in ll) {
         if (!ll.hasOwnProperty(listId))
           continue;
-      var list = ll[listId] 
+      var list = ll[listId]
         for(var i = 0; i < list.objects.length; i++) {
-      var elTarget = $("#info_"+list.objects[i]);  
+      var elTarget = $("#info_"+list.objects[i]);
             if(elTarget.length) {
                 $('<div class="in-list"></div>')
                   .css('background', list.color)
                   .css('left', offset + 'px')
                   .appendTo(elTarget.siblings('.row').first());
             }
-        }    
+        }
         offset += 7;
     }
 }
 
 /* Init and render */
 GM_addStyle(
-    '#favoriteLists {padding: 3px; margin: 1px 0;}'
-    + '#favoriteLists>li {display: block;padding:4px;position:relative;}'
+    '#favoriteLists {padding: 0 0 0 10px}'
+    + '#favoriteLists>li {display: block;position:relative;}'
     + '#favoriteLists .delete {position:absolute;right:0;top:0;}'
     + '.in-list, .in-list-admin {z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute}'
     + '.in-list {margin-left: 300px;top: 3px;}'
