@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Filmtipset favorite lists
 // @namespace  https://github.com/Row/filmtipset-userscripts
-// @version    0.3
+// @version    0.4
 // @description Makes it possible to highligt movies that are present in pre-selected lists.
 // @match      http://nyheter24.se/filmtipset/*
 // @copyright  2014+, Row
@@ -99,6 +99,25 @@ function ListHandler() {
           break; /* update max one list per page load */
         }
       }
+    },
+    loadLists = function() {
+      try {
+        lists = JSON.parse(GM_getValue(STORAGE_KEY));
+
+        /* Helvetes, Prototype breaks the native stringify, remove this in the future */
+        for (var listId in lists) {
+          if (!lists.hasOwnProperty(listId))
+            continue;
+
+          var list = lists[listId];
+          if (typeof list.objects == "string")
+            list.objects = JSON.parse(list.objects);
+
+        }
+      } catch (err) {
+        console.error("Limited support? Malformed JSON? First run?");
+        lists = {};
+      }
     };
 
   /**
@@ -115,6 +134,7 @@ function ListHandler() {
   };
 
   this.addList = function(listId, memberId, title, color) {
+    loadLists();
     lists[listId] = {
       "title": title,
       "lastUpdate": 0,
@@ -135,24 +155,7 @@ function ListHandler() {
   /**
    * Init
    */
-  try {
-    lists = JSON.parse(GM_getValue(STORAGE_KEY));
-
-    /* Helvetes, Prototype breaks the native stringify, remove this in the future */
-    for (var listId in lists) {
-      if (!lists.hasOwnProperty(listId))
-        continue;
-
-      var list = lists[listId];
-
-      if (typeof list.objects == "string")
-        list.objects = JSON.parse(list.objects);
-    }
-  } catch (err) {
-    console.error("Limited support? Malformed JSON? First run?");
-    lists = {};
-  }
-
+  loadLists();
   updateLists();
 }
 
