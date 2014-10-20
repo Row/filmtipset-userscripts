@@ -2,19 +2,19 @@
 // @name           Filmtipset Custom Search Links
 // @namespace      none
 // @description    Adds custom search links on each movie page. Edit the code to add and remove links.
-// @version        0.04
+// @version        0.1
 // @include        http://www.filmtipset.se/film/*
 // @include        http://nyheter24.se/filmtipset/film/*
 // ==/UserScript==
 
 
 //Some setup
-var menuTitle = "My Custom Search Links"
+var menuTitle = "Mina anpassade";
 
 var urlList = [
     {title: 'Yahoo Movies', url: 'http://movies.yahoo.com/mv/search?&p=%s'},       //%s is replace by the movie title
     {title: 'Youtube',      url: 'http://www.youtube.com/results?search_query=%s'},
-    {title: 'Flixster',     url: 'http://www.flixster.com/?q=%s'}                  //Last row no comma
+    {title: 'Google',       url: 'https://www.google.com/search?q=%s'}                  //Last row no comma
 ];
 
 //End Setup
