@@ -32,10 +32,10 @@ function ListHandler() {
     lists,
     dfds = [],
     /**
-     * Private 
+     * Private
      */
     generateListUrl = function(listId, memberId, pageOffset) {
-      return "http://nyheter24.se/filmtipset/yourpage.cgi?member=" + memberId 
+      return "http://nyheter24.se/filmtipset/yourpage.cgi?member=" + memberId
              + "&page=package_view&package=" + listId
              + "&page_nr=" + pageOffset;
     },
@@ -105,12 +105,11 @@ function ListHandler() {
    * Public
    */
   this.getLists = function() {
-  for (listId in lists) {
-     if (!lists.hasOwnProperty(listId))
-       continue;
+    for (listId in lists) {
+      if (!lists.hasOwnProperty(listId))
+        continue;
 
-     lists[listId].url = generateListUrl(listId, lists[listId].memberId, 1);
-
+      lists[listId].url = generateListUrl(listId, lists[listId].memberId, 1);
     }
     return lists;
   };
@@ -132,7 +131,7 @@ function ListHandler() {
     delete lists[listId];
     persist();
   };
-  
+
   /**
    * Init
    */
@@ -157,7 +156,6 @@ function ListHandler() {
   updateLists();
 }
 
-
 function renderAdmin(list) {
   var elBtn, elHld, elCol;
   if (!/package_view/.test(document.location.href))
@@ -178,7 +176,7 @@ function renderAdmin(list) {
       list.addList(listId, memberId, title, elCol.val());
       $('<span style="color: green; font-weight:bold">Sparad</span>').insertAfter(elBtn).hide(3000);
     });
-    
+
     elBtn.insertAfter(elHld);
     elCol.change().insertAfter(elHld);
 }
@@ -208,19 +206,19 @@ function renderMarkers(lists) {
     var ll = lists.getLists();
     var offset = 0;
     for (listId in ll) {
-        if (!ll.hasOwnProperty(listId))
-          continue;
+      if (!ll.hasOwnProperty(listId))
+        continue;
       var list = ll[listId]
-        for(var i = 0; i < list.objects.length; i++) {
-      var elTarget = $("#info_"+list.objects[i]);
-            if(elTarget.length) {
-                $('<div class="in-list"></div>')
-                  .css('background', list.color)
-                  .css('left', offset + 'px')
-                  .appendTo(elTarget.siblings('.row').first());
-            }
+      for(var i = 0; i < list.objects.length; i++) {
+        var elTarget = $("#info_"+list.objects[i]);
+        if(elTarget.length) {
+            $('<div class="in-list"></div>')
+              .css('background', list.color)
+              .css('left', offset + 'px')
+              .appendTo(elTarget.siblings('.row').first());
         }
-        offset += 7;
+      }
+      offset += 7;
     }
 }
 
