@@ -55,9 +55,7 @@ function FriendHandler()
         friends = [];
     }
 
-    var me = document.querySelectorAll(
-        'div.menuitemtitle'
-    )[7].innerHTML.replace(/<.+>/,'');
+    var me = document.querySelectorAll('.nav-item>.highlight')[0].textContent;
 
     var updateFriends = function (friendPageContent)
     {
