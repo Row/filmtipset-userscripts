@@ -59,7 +59,7 @@ function FriendHandler()
 
     var updateFriends = function (friendPageContent)
     {
-        var offset = 21600000;
+        var offset = 7 * 24 * 60 * 60 * 1000; 
         var nextUpdate = new Date().getTime() + offset;
         friends = [];
         friendPageContent.replace(
