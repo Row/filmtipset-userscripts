@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Filmtipset favorite lists
 // @namespace  https://github.com/Row/filmtipset-userscripts
-// @version    0.4
+// @version    0.5
 // @description Makes it possible to highligt movies that are present in pre-selected lists.
 // @match      http://nyheter24.se/filmtipset/*
 // @copyright  2014+, Row
@@ -146,6 +146,11 @@ function ListHandler() {
     updateLists();
   };
 
+  this.hardRefresh = function(listId) {
+    lists[listId].lastUpdate = 0;
+    updateLists();
+  };
+
   this.removeList = function(listId) {
     console.log("del", listId);
     delete lists[listId];
@@ -186,10 +191,15 @@ function renderAdmin(list) {
 
 function renderList(list) {
   var elDestination = $("td > div.rightlink").last(),
-  ul = $('<ul id="favoriteLists" />').insertAfter(elDestination).on("click", ".delete", function() {
-    list.removeList($(this).data('listId'));
-    $(this).parent().hide();
-  }),
+  ul = $('<ul id="favoriteLists" />')
+    .insertAfter(elDestination)
+    .on("click", ".delete", function() {
+      list.removeList($(this).data('listId'));
+      $(this).parent().hide();
+    })
+    .on('click', '.refresh', function() {
+      list.hardRefresh($(this).data('listId'));
+    });
   lists = list.getLists();
   $('<div class="rightlinkheader">Favoritlistor</div>').insertAfter(elDestination);
 
@@ -200,6 +210,7 @@ function renderList(list) {
     var li = $('<li class="rightlink">').appendTo(ul);
     $('<a>').text(l.title).attr('href', l.url).appendTo(li);
     $('<div class="in-list-admin"></div>').css('background', l.color).prependTo(li);
+    $('<button class="refresh">↻</button>').data("listId", listId).appendTo(li);
     $('<button class="delete">X</button>').data("listId", listId).appendTo(li);
   }
 
@@ -230,6 +241,9 @@ GM_addStyle(
     '#favoriteLists {padding: 0 0 0 10px}'
     + '#favoriteLists>li {display: block;position:relative;}'
     + '#favoriteLists .delete {position:absolute;right:0;top:0;}'
+    + '#favoriteLists .refresh {position:absolute;right: 24px;top: -1px;}'
+    + '#favoriteLists>li button {display: none;}'
+    + '#favoriteLists>li:hover button {display: block}'
     + '.in-list, .in-list-admin {z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute}'
     + '.in-list {margin-left: 300px;top: 3px;}'
     + '.in-list-admin {margin-left: -12px; top:6px;}'
