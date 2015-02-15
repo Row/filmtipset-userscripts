@@ -27,25 +27,30 @@ Array.prototype.unique = function() {
   return a;
 };
 
-function ListHandler() {
+function ListHandler()
+{
   var STORAGE_KEY = "filmtipsetLists",
     lists,
     dfds = [],
     /**
      * Private
      */
-    generateListUrl = function(listId, memberId, pageOffset) {
+    generateListUrl = function(listId, memberId, pageOffset)
+    {
       return "http://nyheter24.se/filmtipset/yourpage.cgi?member=" + memberId
              + "&page=package_view&package=" + listId
              + "&page_nr=" + pageOffset;
     },
-    persist = function() {
+    persist = function()
+    {
       GM_setValue(STORAGE_KEY, JSON.stringify(lists)); /* Prototype breaks stringify, this is handled on parse */
     },
-    collectObjects = function(htmlData, listId) {
+    collectObjects = function(htmlData, listId)
+    {
       lists[listId].objects = lists[listId].objects.concat(parseObjects(htmlData, listId));
     },
-    collectListInfo = function(htmlData, listId) {
+    collectListInfo = function(htmlData, listId)
+    {
       var pageOffsetsCount = [],
         url, i;
       htmlData.replace(
@@ -69,7 +74,8 @@ function ListHandler() {
         dfds = [];
       });
     },
-    parseObjects = function(htmlData, listId) {
+    parseObjects = function(htmlData, listId)
+    {
       var list = [];
 
       htmlData.replace(
@@ -80,7 +86,8 @@ function ListHandler() {
       );
       return list.unique();
     },
-    updateLists = function() {
+    updateLists = function()
+    {
       var listId,
         offset = 60 * 60 * 24 * 1000, // Milliseconds
         nextUpdate = new Date().getTime() - offset;
@@ -100,7 +107,8 @@ function ListHandler() {
         }
       }
     },
-    loadLists = function() {
+    loadLists = function()
+    {
       try {
         lists = JSON.parse(GM_getValue(STORAGE_KEY));
 
@@ -123,7 +131,8 @@ function ListHandler() {
   /**
    * Public
    */
-  this.getLists = function() {
+  this.getLists = function()
+  {
     for (listId in lists) {
       if (!lists.hasOwnProperty(listId))
         continue;
@@ -133,7 +142,8 @@ function ListHandler() {
     return lists;
   };
 
-  this.addList = function(listId, memberId, title, color) {
+  this.addList = function(listId, memberId, title, color)
+  {
     loadLists();
     lists[listId] = {
       "title": title,
@@ -146,12 +156,14 @@ function ListHandler() {
     updateLists();
   };
 
-  this.hardRefresh = function(listId) {
+  this.hardRefresh = function(listId)
+  {
     lists[listId].lastUpdate = 0;
     updateLists();
   };
 
-  this.removeList = function(listId) {
+  this.removeList = function(listId)
+  {
     console.log("del", listId);
     delete lists[listId];
     persist();
@@ -164,7 +176,8 @@ function ListHandler() {
   updateLists();
 }
 
-function renderAdmin(list) {
+function renderAdmin(list)
+{
   var elBtn, elHld, elCol;
   if (!/package_view/.test(document.location.href))
     return;
@@ -191,7 +204,8 @@ function renderAdmin(list) {
   elBtn.appendTo(elHld);
 }
 
-function renderList(list) {
+function renderList(list) 
+{
   var elDestination = $("td > div.rightlink").last(),
     ul = $('<ul id="favoriteLists" />')
     .insertAfter(elDestination)
@@ -218,7 +232,8 @@ function renderList(list) {
 
 }
 
-function renderMarkers(lists) {
+function renderMarkers(lists) 
+{
   var ll = lists.getLists();
   var offset = 0;
   for (listId in ll) {
@@ -240,7 +255,15 @@ function renderMarkers(lists) {
 
 /* Init and render */
 GM_addStyle(
-  '#favoriteLists {padding: 0 0 0 10px}' + '#favoriteLists>li {display: block;position:relative;}' + '#favoriteLists .delete {position:absolute;right:0;top:0;}' + '#favoriteLists .refresh {position:absolute;right: 24px;top: -1px;}' + '#favoriteLists>li button {display: none;}' + '#favoriteLists>li:hover button, #favoriteLists>li.add-new button {display: block;margin-top: 2px}' + '.in-list, .in-list-admin {z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute}' + '.in-list {margin-left: 300px;top: 3px;}' + '.in-list-admin {margin-left: -12px; top:6px;}'
+  '#favoriteLists {padding: 0 0 0 10px}'
+  + '#favoriteLists>li {display: block;position:relative;}'
+  + '#favoriteLists .delete {position:absolute;right:0;top:0;}'
+  + '#favoriteLists .refresh {position:absolute;right: 24px;top: -1px;}'
+  + '#favoriteLists>li button {display: none;}'
+  + '#favoriteLists>li:hover button, #favoriteLists>li.add-new button {display: block;margin-top: 2px}'
+  + '.in-list, .in-list-admin {z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute}'
+  + '.in-list {margin-left: 300px;top: 3px;}'
+  + '.in-list-admin {margin-left: -12px; top:6px;}'
 );
 
 var list = new ListHandler();
