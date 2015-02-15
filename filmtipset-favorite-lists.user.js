@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Filmtipset favorite lists
 // @namespace  https://github.com/Row/filmtipset-userscripts
-// @version    0.5
+// @version    0.6
 // @description Makes it possible to highligt movies that are present in pre-selected lists.
 // @match      http://nyheter24.se/filmtipset/*
 // @copyright  2014+, Row
@@ -168,30 +168,32 @@ function renderAdmin(list) {
   var elBtn, elHld, elCol;
   if (!/package_view/.test(document.location.href))
     return;
-  elHld = $("h1").first();
-  elCol = $('<input type="text" value="#FF0000" />')
+  elHld = $('<li class="add-new rightlink" />');
+  $("#favoriteLists").append(elHld);
+  $('<div class="in-list-admin"></div>').prependTo(elHld);
+  elCol = $('<input type="text" value="#FF0000" title="Färgkod på listan t.ex: #FF0000, yellow eller blue" />')
     .on("keyup change", function() {
-      $(this).css('border-left', '12px solid ' + $(this).val());
+      $(this).siblings('.in-list-admin').css('background', $(this).val());
     })
   elBtn = $("<button>Spara listan till favoriter</button>")
     .on("click", function() {
       var title, memberId, listId, url, matches;
       url = document.location.href;
-      title = elHld.text();
+      title = $('h1').text();
       matches = /\bmember=(\d+).*?\bpackage=(\d+)/.exec(url);
       memberId = matches[1];
       listId = matches[2];
       list.addList(listId, memberId, title, elCol.val());
-      $('<span style="color: green; font-weight:bold">Sparad</span>').insertAfter(elBtn).hide(3000);
+      $('<span style="color: green; font-weight:bold">Sparad</span>').insertAfter(elBtn).fadeOut(3000);
     });
 
-    elBtn.insertAfter(elHld);
-    elCol.change().insertAfter(elHld);
+  elCol.change().appendTo(elHld);
+  elBtn.appendTo(elHld);
 }
 
 function renderList(list) {
   var elDestination = $("td > div.rightlink").last(),
-  ul = $('<ul id="favoriteLists" />')
+    ul = $('<ul id="favoriteLists" />')
     .insertAfter(elDestination)
     .on("click", ".delete", function() {
       list.removeList($(this).data('listId'));
@@ -217,39 +219,31 @@ function renderList(list) {
 }
 
 function renderMarkers(lists) {
-    var ll = lists.getLists();
-    var offset = 0;
-    for (listId in ll) {
-      if (!ll.hasOwnProperty(listId))
-        continue;
-      var list = ll[listId]
-      for(var i = 0; i < list.objects.length; i++) {
-        var elTarget = $("#info_"+list.objects[i]);
-        if(elTarget.length) {
-            $('<div class="in-list"></div>')
-              .css('background', list.color)
-              .css('left', offset + 'px')
-              .appendTo(elTarget.siblings('.row').first());
-        }
+  var ll = lists.getLists();
+  var offset = 0;
+  for (listId in ll) {
+    if (!ll.hasOwnProperty(listId))
+      continue;
+    var list = ll[listId]
+    for (var i = 0; i < list.objects.length; i++) {
+      var elTarget = $("#info_" + list.objects[i]);
+      if (elTarget.length) {
+        $('<div class="in-list"></div>')
+          .css('background', list.color)
+          .css('left', offset + 'px')
+          .appendTo(elTarget.siblings('.row').first());
       }
-      offset += 7;
     }
+    offset += 7;
+  }
 }
 
 /* Init and render */
 GM_addStyle(
-    '#favoriteLists {padding: 0 0 0 10px}'
-    + '#favoriteLists>li {display: block;position:relative;}'
-    + '#favoriteLists .delete {position:absolute;right:0;top:0;}'
-    + '#favoriteLists .refresh {position:absolute;right: 24px;top: -1px;}'
-    + '#favoriteLists>li button {display: none;}'
-    + '#favoriteLists>li:hover button {display: block}'
-    + '.in-list, .in-list-admin {z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute}'
-    + '.in-list {margin-left: 300px;top: 3px;}'
-    + '.in-list-admin {margin-left: -12px; top:6px;}'
+  '#favoriteLists {padding: 0 0 0 10px}' + '#favoriteLists>li {display: block;position:relative;}' + '#favoriteLists .delete {position:absolute;right:0;top:0;}' + '#favoriteLists .refresh {position:absolute;right: 24px;top: -1px;}' + '#favoriteLists>li button {display: none;}' + '#favoriteLists>li:hover button, #favoriteLists>li.add-new button {display: block;margin-top: 2px}' + '.in-list, .in-list-admin {z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute}' + '.in-list {margin-left: 300px;top: 3px;}' + '.in-list-admin {margin-left: -12px; top:6px;}'
 );
 
 var list = new ListHandler();
-renderAdmin(list);
 renderList(list);
 renderMarkers(list);
+renderAdmin(list);
