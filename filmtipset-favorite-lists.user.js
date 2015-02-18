@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Filmtipset favorite lists
 // @namespace  https://github.com/Row/filmtipset-userscripts
-// @version    0.6
+// @version    0.7
 // @description Makes it possible to highligt movies that are present in pre-selected lists.
 // @match      http://nyheter24.se/filmtipset/*
 // @copyright  2014+, Row
@@ -89,8 +89,8 @@ function ListHandler()
     updateLists = function()
     {
       var listId,
-        offset = 60 * 60 * 24 * 1000, // Milliseconds
-        nextUpdate = new Date().getTime() - offset;
+          offset = 60 * 60 * 24 * 1000, // Milliseconds
+          nextUpdate = new Date().getTime() - offset;
       for (listId in lists) {
         if (!lists.hasOwnProperty(listId))
           continue;
@@ -204,7 +204,7 @@ function renderAdmin(list)
   elBtn.appendTo(elHld);
 }
 
-function renderList(list) 
+function renderList(list)
 {
   var elDestination = $("td > div.rightlink").last(),
     ul = $('<ul id="favoriteLists" />')
@@ -232,26 +232,67 @@ function renderList(list)
 
 }
 
-function renderMarkers(lists) 
+function isMoviePage()
 {
-  var ll = lists.getLists();
+  return /filmtipset\/film\//.test(document.location.href);
+}
+
+function renderMarkers(lists)
+{
+  var lists = lists.getLists();
   var offset = 0;
-  for (listId in ll) {
-    if (!ll.hasOwnProperty(listId))
+  var renderer = isMoviePage() ? new RenderSinglePage() : new RenderListPage();
+  for (listId in lists) {
+    if (!lists.hasOwnProperty(listId))
       continue;
-    var list = ll[listId]
+    var list = lists[listId]
+    renderer.color = list.color;
     for (var i = 0; i < list.objects.length; i++) {
-      var elTarget = $("#info_" + list.objects[i]);
-      if (elTarget.length) {
-        $('<div class="in-list"></div>')
-          .css('background', list.color)
-          .css('left', offset + 'px')
-          .appendTo(elTarget.siblings('.row').first());
-      }
+      renderer.render(list.objects[i]);
     }
-    offset += 7;
+    renderer.increaseOffset();
   }
 }
+
+/* Render markers */
+var Renderer = {
+  color: 'green',
+  offset: 0,
+  increaseOffset: function()
+  {
+    this.offset++;
+  }
+}
+
+function RenderSinglePage()
+{
+  var currentId = $('input[type=hidden][name=object]').val();
+  this.render = function(movieId)
+  {
+    if(currentId == movieId) {
+      $('.movie_header').append(
+        $('<div class="in-list"></div>')
+          .css('background', this.color)
+          .css('left', (this.offset * 10) + 'px'));
+    }
+  }
+}
+RenderSinglePage.prototype = Renderer;
+
+function RenderListPage()
+{
+  this.render = function(movieId)
+  {
+    var elTarget = $("#info_" + movieId);
+    if (elTarget.length) {
+      $('<div class="in-list"></div>')
+        .css('background', this.color)
+        .css('left', (this.offset * 7) + 'px')
+        .appendTo(elTarget.siblings('.row').first());
+    }
+  }
+}
+RenderListPage.prototype = Renderer;
 
 /* Init and render */
 GM_addStyle(
@@ -264,6 +305,8 @@ GM_addStyle(
   + '.in-list, .in-list-admin {z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute}'
   + '.in-list {margin-left: 300px;top: 3px;}'
   + '.in-list-admin {margin-left: -12px; top:6px;}'
+  + '.movie_header {position:relative;}'
+  + '.movie_header .in-list {transform:scale(2);}'
 );
 
 var list = new ListHandler();
