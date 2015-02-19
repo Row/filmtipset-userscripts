@@ -301,6 +301,7 @@ GM_addStyle(
     ".in-list, .in-list-admin {z-index: 6;border: 1px solid #000000; border-radius: 4px;width: 8px; height: 8px;position: absolute}" +
     ".in-list {margin-left: 300px;top: 3px;}" +
     ".in-list-admin {margin-left: -12px; top:6px;}" +
+    "li.add-new.rightlink {border: 1px solid #DEB887; border-radius: 5px; padding: 3px; padding-left: 22px; margin-left: -15px; background: #F9EEE0;}" +
     ".movie_header {position:relative;}" +
     ".movie_header .in-list {transform:scale(2);}"
 );
