@@ -194,7 +194,7 @@ function renderAdmin(list) {
             .fadeOut(3000);
     });
 
-    elCol.change().appendTo(elHld);
+    elCol.appendTo(elHld).change();
     elBtn.appendTo(elHld);
 }
 
