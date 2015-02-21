@@ -151,7 +151,6 @@ var STORAGE_KEY = "filmtipsetLists",
     };
 
     this.removeList = function(listId) {
-        console.log("del", listId);
         delete mLists[listId];
         persist();
     };
