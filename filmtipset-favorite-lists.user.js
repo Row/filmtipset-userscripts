@@ -215,12 +215,15 @@ function renderList(aList) {
         .insertAfter(elDestination);
 
     for (listId in lists) {
-        var li, l;
+        var li, l, title;
         if (!lists.hasOwnProperty(listId)) {
             continue;
         }
         l = lists[listId];
-        li = $("<li class='rightlink'>").appendTo(ul);
+        li = $("<li class='rightlink'>");
+        var title = l.objects.length + " filmer, Uppdaterad " +
+             new Date(l.lastUpdate).toLocaleString();
+        li.attr("title", title).appendTo(ul);
         $("<a>").text(l.title).attr("href", l.url).appendTo(li);
         $("<div class='in-list-admin'></div>")
             .css("background", l.color)
