@@ -49,7 +49,7 @@ var STORAGE_KEY = "filmtipsetLists",
             pageOffsetsCount = [];
 
         htmlData.replace(/page_nr=(\d+)/gm, function(m, n) {
-            if (n !== 1) {
+            if (parseInt(n) !== 1) {
                 pageOffsetsCount.push(n);
             }
         });
