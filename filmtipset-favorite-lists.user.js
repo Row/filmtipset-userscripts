@@ -249,7 +249,7 @@ function renderMarkers(aLists) {
             continue;
         }
         list = lists[listId];
-        renderer.color = list.color;
+        renderer.list = list;
         for (i = 0; i < list.objects.length; i++) {
             renderer.render(list.objects[i]);
         }
@@ -259,11 +259,11 @@ function renderMarkers(aLists) {
 
 /* Renderer classes for markers */
 var Renderer = {
-    color: "green",
+    list:null,
     offset: 0,
     increaseOffset: function() {
         this.offset++;
-    }
+    },
 };
 
 function RenderSinglePage() {
@@ -271,9 +271,10 @@ function RenderSinglePage() {
     this.render = function(movieId) {
         if(currentId == movieId) {
             $(".movie_header").append(
-                $("<div class='in-list'></div>")
-                    .css("background", this.color)
-                    .css("left", (this.offset * 10) + "px")
+                $("<div />")
+                    .addClass("in-list-badge")
+                    .css("background", this.list.color)
+                    .text(this.list.title)
             );
         }
     };
@@ -284,8 +285,9 @@ function RenderListPage() {
     this.render = function(movieId) {
         var elTarget = $("#info_" + movieId);
         if (elTarget.length) {
-            $("<div class='in-list'></div>")
-                .css("background", this.color)
+            $("<div />")
+                .addClass("in-list")
+                .css("background", this.list.color)
                 .css("left", (this.offset * 7) + "px")
                 .appendTo(elTarget.siblings(".row").first());
         }
@@ -306,12 +308,11 @@ GM_addStyle(
     ".in-list-admin {margin-left: -12px; top:6px;}" +
     "li.add-new.rightlink {border: 1px solid #DEB887; border-radius: 5px; padding: 3px; padding-left: 22px; margin-left: -15px; background: #F9EEE0;}" +
     ".movie_header {position:relative;}" +
-    ".movie_header .in-list {transform:scale(2);}"
+    ".in-list-badge {height: auto; width: auto; color: #FFF; float: right; position: relative; margin-left: 0.3em; padding: 0.4em 0.4em; letter-spacing: 0.05em; font-size: 11px; font-weight: 700; margin-bottom: 10px; margin-top: -29px; border: 1px solid #E2E2E2; border-radius: 3px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;" 
 );
 
 var list = new ListHandler();
 renderList(list);
 renderMarkers(list);
 renderAdmin(list);
-
 })(unsafeWindow.jQuery, document); /* jQuery from site */
