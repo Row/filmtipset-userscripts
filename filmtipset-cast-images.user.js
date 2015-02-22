@@ -2,30 +2,33 @@
 // @name           Filmtipset Cast Images
 // @namespace      https://github.com/Row/filmtipset-userscripts
 // @description    Displays small actor images on each movie page on filmtipset.se
-// @version        0.1
+// @version        0.2
 // @include        http://www.filmtipset.se/film/*
 // @include        http://nyheter24.se/filmtipset/film/*
 // ==/UserScript==
-
+(function( document ) {
+"use strict";
 var persons;
 
 function get(url, cb)
 {
-  GM_xmlhttpRequest({
-     method: "GET",
-     headers: {
-        "Referer": ""
-     },
-     url: url,
-     onload: function(xhr) { cb( xhr.responseText); },
-     overrideMimeType: 'text/plain; charset=x-user-defined'
-  });
+    GM_xmlhttpRequest({
+        method: "GET",
+        headers: {
+            "Referer": ""
+        },
+        url: url,
+        onload: function(xhr) {
+            cb( xhr.responseText);
+        },
+        overrideMimeType: 'text/plain; charset=x-user-defined'
+    });
 }
 
 function fetchImageData(el, imdbObj)
 {
     get(imdbObj.img, function(bin) {
-        var base64img = customBase64Encode(bin);
+        var base64img = base64Encode(bin);
         setCastStyle(el, 'data:image/jpeg;base64,' + base64img);
     });
 }
@@ -37,7 +40,7 @@ function setCastStyle(el, img)
     el.style.margin     = '2px 0';
     el.style.float      = 'left';
     el.style.width      = '120px';
-    el.style.background = '#F3F4E7 url("'+img+'") no-repeat 10px 50%';
+    el.style.background = '#F3F4E7 url("' + img + '") no-repeat 10px 50%';
 }
 
 function drawCastBox()
@@ -62,7 +65,7 @@ function drawImages(text)
 {
     var imdbActors = [];
     text.replace(/title="(.*?)".*?loadlate="(.*?)"/gm,
-        function(m, n, o) {imdbActors.push({img: o, name: n})}
+        function(m, n, o) {imdbActors.push({img: o, name: n});}
     );
     for(var i = 0; i < persons.snapshotLength; i++) {
         for(var j = 0; j < imdbActors.length; j++) {
@@ -77,79 +80,45 @@ function drawImages(text)
 
 function callImdb()
 {
-    var xpath = '//a[contains(@href, "http://www.imdb.com/title/")]'
+    var xpath = '//a[contains(@href, "http://www.imdb.com/title/")]';
     var imdbUrl = document.evaluate(xpath, document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null).snapshotItem(0);
     if(!imdbUrl || !drawCastBox())
         return false;
     get(imdbUrl.toString(), drawImages);
 }
 
-/* http://stackoverflow.com/questions/8778863/downloading-an-image-using-xmlhttprequest-in-a-userscript */
-function customBase64Encode (inputStr) 
-{
-    var
-        bbLen               = 3,
-        enCharLen           = 4,
-        inpLen              = inputStr.length,
-        inx                 = 0,
-        jnx,
-        keyStr              = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-                            + "0123456789+/=",
-        output              = "",
-        paddingBytes        = 0;
-    var
-        bytebuffer          = new Array (bbLen),
-        encodedCharIndexes  = new Array (enCharLen);
-
-    while (inx < inpLen) {
-        for (jnx = 0;  jnx < bbLen;  ++jnx) {
-            /*--- Throw away high-order byte, as documented at:
-              https://developer.mozilla.org/En/Using_XMLHttpRequest#Handling_binary_data
-            */
-            if (inx < inpLen)
-                bytebuffer[jnx] = inputStr.charCodeAt (inx++) & 0xff;
-            else
-                bytebuffer[jnx] = 0;
+// http://stackoverflow.com/a/7372816/4189664
+function base64Encode(str) {
+    var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+        out = "",
+        i = 0,
+        len = str.length,
+        c1, c2, c3;
+    while (i < len) {
+        c1 = str.charCodeAt(i++) & 0xff;
+        if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt((c1 & 0x3) << 4);
+            out += "==";
+            break;
         }
-
-        /*--- Get each encoded character, 6 bits at a time.
-            index 0: first  6 bits
-            index 1: second 6 bits
-                        (2 least significant bits from inputStr byte 1
-                         + 4 most significant bits from byte 2)
-            index 2: third  6 bits
-                        (4 least significant bits from inputStr byte 2
-                         + 2 most significant bits from byte 3)
-            index 3: forth  6 bits (6 least significant bits from inputStr byte 3)
-        */
-        encodedCharIndexes[0] = bytebuffer[0] >> 2;
-        encodedCharIndexes[1] = ( (bytebuffer[0] & 0x3) << 4)   |  (bytebuffer[1] >> 4);
-        encodedCharIndexes[2] = ( (bytebuffer[1] & 0x0f) << 2)  |  (bytebuffer[2] >> 6);
-        encodedCharIndexes[3] = bytebuffer[2] & 0x3f;
-
-        //--- Determine whether padding happened, and adjust accordingly.
-        paddingBytes          = inx - (inpLen - 1);
-        switch (paddingBytes) {
-            case 1:
-                // Set last character to padding char
-                encodedCharIndexes[3] = 64;
-                break;
-            case 2:
-                // Set last 2 characters to padding char
-                encodedCharIndexes[3] = 64;
-                encodedCharIndexes[2] = 64;
-                break;
-            default:
-                break; // No padding - proceed
+        c2 = str.charCodeAt(i++);
+        if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt(((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4));
+            out += CHARS.charAt((c2 & 0xF) << 2);
+            out += "=";
+            break;
         }
-
-        /*--- Now grab each appropriate character out of our keystring,
-            based on our index array and append it to the output string.
-        */
-        for (jnx = 0;  jnx < enCharLen;  ++jnx)
-            output += keyStr.charAt ( encodedCharIndexes[jnx] );
+        c3 = str.charCodeAt(i++);
+        out += CHARS.charAt(c1 >> 2);
+        out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+        out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+        out += CHARS.charAt(c3 & 0x3F);
     }
-    return output;
+    return out;
 }
 
+// Init
 callImdb();
+})(document);
