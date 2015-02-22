@@ -314,4 +314,4 @@ var list = new ListHandler();
 renderList(list);
 renderMarkers(list);
 renderAdmin(list);
-})(unsafeWindow.jQuery, document); /* jQuery from site */
+})(unsafeWindow.jQuery, document); // jQuery from site
