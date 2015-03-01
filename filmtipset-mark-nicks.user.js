@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Filmtipset mark nicks.
-// @version        0.2
+// @version        0.3
 // @description  Mark your own and friends names with a little square.
 // @namespace  https://github.com/Row/filmtipset-userscripts
 // @include        http://nyheter24.se/filmtipset/*
@@ -87,7 +87,7 @@ function FriendHandler()
 
     this.isFriend = function(name)
     {
-       return friends.indexOf(name) > -1;
+       return friends.indexOf(name) > -1 && /^\D+$/.test(name);
     }
 
     this.isMe = function(name)
