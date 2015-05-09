@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Filmtipset favorite lists
 // @namespace  https://github.com/Row/filmtipset-userscripts
-// @version    0.7.1
+// @version    0.7.2
 // @description Highligt movies that are in pre-selected favorite lists.
 // @match      http://nyheter24.se/filmtipset/*
 // @copyright  2014+, Row
@@ -212,6 +212,12 @@ function renderList(aList) {
         lists = aList.getLists();
     $("<div class='rightlinkheader'>Favoritlistor</div>")
         .insertAfter(elDestination);
+
+    if (lists.length < 1) {
+        $("<li class='rightlink'>")
+            .text('Gå till en lista för att lägga till den.')
+            .appendTo(ul);
+    }
 
     for (listId in lists) {
         var li, l, title;
