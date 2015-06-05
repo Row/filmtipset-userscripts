@@ -213,7 +213,7 @@ function renderList(aList) {
     $("<div class='rightlinkheader'>Favoritlistor</div>")
         .insertAfter(elDestination);
 
-    if (lists.length < 1) {
+    if ($.isEmptyObject(lists)) {
         $("<li class='rightlink'>")
             .text('Gå till en lista för att lägga till den.')
             .appendTo(ul);
@@ -261,7 +261,7 @@ function renderMarkers(aLists) {
         renderer.increaseOffset();
     }
 }
-
+g
 /* Renderer classes for markers */
 var Renderer = {
     list:null,
