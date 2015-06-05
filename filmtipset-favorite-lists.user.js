@@ -2,7 +2,7 @@
 // @name       Filmtipset favorite lists
 // @namespace  https://github.com/Row/filmtipset-userscripts
 // @version    0.7.2
-// @description Highligt movies that are in pre-selected favorite lists.
+// @description Highlight movies that are present in pre-selected favorite lists.
 // @match      http://nyheter24.se/filmtipset/*
 // @copyright  2014+, Row
 // ==/UserScript==
