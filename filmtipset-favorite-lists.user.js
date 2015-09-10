@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Filmtipset favorite lists
 // @namespace  https://github.com/Row/filmtipset-userscripts
-// @version    0.7.2
+// @version    0.7.3
 // @description Highlight movies that are present in pre-selected favorite lists.
 // @match      http://nyheter24.se/filmtipset/*
 // @copyright  2014+, Row
@@ -261,7 +261,7 @@ function renderMarkers(aLists) {
         renderer.increaseOffset();
     }
 }
-g
+
 /* Renderer classes for markers */
 var Renderer = {
     list:null,
