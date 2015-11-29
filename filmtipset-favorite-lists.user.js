@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Filmtipset favorite lists
 // @namespace  https://github.com/Row/filmtipset-userscripts
-// @version    0.7.4
+// @version    0.7.5
 // @description Highlight movies that are present in pre-selected favorite lists.
 // @match      http://nyheter24.se/filmtipset/*
 // @copyright  2014+, Row
@@ -24,6 +24,10 @@ Array.prototype.unique = function() {
     }
     return a;
 };
+
+function htmlDecode(value) {
+    return $("<div/>").html(value).text();
+}
 
 function ListHandler() {
 var STORAGE_KEY = "filmtipsetLists",
@@ -49,7 +53,7 @@ var STORAGE_KEY = "filmtipsetLists",
             pageOffsetsCount = [];
 
         htmlData.replace(/<h1[^>]+>(.*)<\/h1>/gm, function(match, title) {
-            mLists[listId].title = title.replace(/<.{1,2}>/g, '');
+            mLists[listId].title = htmlDecode(title.replace(/<.{1,2}>/g, ''));
         });
         htmlData.replace(/page_nr=(\d+)/gm, function(m, n) {
             if (parseInt(n) !== 1) {
