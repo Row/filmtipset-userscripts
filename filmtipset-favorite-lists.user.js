@@ -83,8 +83,8 @@ var STORAGE_KEY = "filmtipsetLists",
     },
     updateLists = function() {
         var listId, list, url,
-            offset = 60 * 60 * 24 * 1000, // Milliseconds
-            nextUpdate = new Date().getTime() - offset;
+            updateIntervalInMilliseconds = 60 * 60 * 24 * 1000,
+            nextUpdate = new Date().getTime() - updateIntervalInMilliseconds;
         for (listId in mLists) {
             if (!mLists.hasOwnProperty(listId)) {
                 continue;
