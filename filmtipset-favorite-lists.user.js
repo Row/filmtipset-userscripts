@@ -4,7 +4,7 @@
 // @version    2.0
 // @description Filmtipset favorite lists makes it possible to select movie lists and assign them custom colors. Colored markings are then placed on the movies, if they belong to the specific list.
 // @match      http://nyheter24.se/filmtipset/*
-// @copyright  2014+, Row
+// @copyright  2016+, Row
 // ==/UserScript==
 
 (function( $, document ) {
