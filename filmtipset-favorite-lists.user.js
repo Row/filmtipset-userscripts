@@ -25,45 +25,34 @@ Array.prototype.unique = function() {
     return a;
 };
 
-function htmlDecode(value) {
-    return $("<div/>").html(value).text();
-}
-
 function ListHandler() {
-var STORAGE_KEY = "filmtipsetLists",
+var STORAGE_KEY = "filmtipsetListsV2",
     mLists,
     myDfds = [],
     //
     // Private methods
     //
-    generateListUrl = function(listId, memberId, pageOffset) {
-        return "http://nyheter24.se/filmtipset/yourpage.cgi?member=" + memberId +
-               "&page=package_view&package=" + listId +
-               "&page_nr=" + pageOffset;
-    },
     persist = function() {
         // Prototype breaks stringify, this is handled on parse
         GM_setValue(STORAGE_KEY, JSON.stringify(mLists));
     },
     collectObjects = function(htmlData, listId) {
-        mLists[listId].objects = mLists[listId].objects.concat(parseObjects(htmlData, listId));
+        mLists[listId].objects = mLists[listId].objects.concat(parseObjects(htmlData));
     },
     collectListInfo = function(htmlData, listId) {
-        var url, i,
-            pageOffsetsCount = [];
+        var i,
+            pagesUrls = [];
 
-        htmlData.replace(/<h1[^>]+>(.*)<\/h1>/gm, function(match, title) {
-            mLists[listId].title = htmlDecode(title.replace(/<.{1,2}>/g, ''));
+        var htmlDOM = $.parseHTML(htmlData);
+        mLists[listId].title = $("h1", htmlDOM).text();
+        $("a[href*='page_nr=']", htmlDOM).each(function(index, el) {
+            var url = $(el).attr("href");
+            if (url.indexOf("page_nr=1&") == -1)
+                pagesUrls.push(url);
         });
-        htmlData.replace(/page_nr=(\d+)/gm, function(m, n) {
-            if (parseInt(n) !== 1) {
-                pageOffsetsCount.push(n);
-            }
-        });
-        pageOffsetsCount = pageOffsetsCount.unique();
-        for (i = 0; i < pageOffsetsCount.length; i++) {
-            var list = mLists[listId];
-            url = generateListUrl(listId, list.memberId, pageOffsetsCount[i]);
+        pagesUrls = pagesUrls.unique();
+        for (i = 0; i < pagesUrls.length; i++) {
+            var url = pagesUrls[i];
             myDfds.push($.get(url, function(data) {
                 collectObjects(data, listId);
             })); // jshint ignore:line
@@ -74,7 +63,7 @@ var STORAGE_KEY = "filmtipsetLists",
             myDfds = [];
         });
     },
-    parseObjects = function(htmlData, listId) {
+    parseObjects = function(htmlData) {
         var list = [];
         htmlData.replace(/'info_(\d+)'/gm, function(m, n) {
             list.push(n);
@@ -82,7 +71,7 @@ var STORAGE_KEY = "filmtipsetLists",
         return list.unique();
     },
     updateLists = function() {
-        var listId, list, url,
+        var listId, list,
             updateIntervalInMilliseconds = 60 * 60 * 24 * 1000,
             nextUpdate = new Date().getTime() - updateIntervalInMilliseconds;
         for (listId in mLists) {
@@ -93,8 +82,7 @@ var STORAGE_KEY = "filmtipsetLists",
             if (nextUpdate > list.lastUpdate) {
                 list.objects = [];
                 list.lastUpdate = new Date().getTime();
-                url = generateListUrl(listId, list.memberId, 1);
-                $.get(url, function(data) {
+                $.get(list.url, function(data) {
                     collectListInfo(data, listId);
                 }); // jshint ignore:line
                 break; // update max one list per page load
@@ -129,23 +117,17 @@ var STORAGE_KEY = "filmtipsetLists",
     // Public
     //
     this.getLists = function() {
-        var listId;
-        for (listId in mLists) {
-            if (!mLists.hasOwnProperty(listId)) {
-                continue;
-            }
-            mLists[listId].url = generateListUrl(listId, mLists[listId].memberId, 1);
-        }
         return mLists;
     };
 
-    this.addList = function(listId, memberId, title, color) {
+    this.addList = function(url, title, color) {
+        var listId = Date.now();
         loadLists(); // In case there are multiple tabs open
         mLists[listId] = {
             "title": title,
             "lastUpdate": 0,
             "listId": listId,
-            "memberId": memberId,
+            "url": url,
             "color": color,
             "objects": []
         };
@@ -171,7 +153,7 @@ var STORAGE_KEY = "filmtipsetLists",
 
 function renderAdmin(list) {
     var elBtn, elHld, elCol;
-    if (!/package_view/.test(document.location.href)) {
+    if (!/package_view|dvd.html|bio.html|tv.html/.test(document.location.href)) {
         return;
     }
     elHld = $("<li class='add-new rightlink' />");
@@ -184,13 +166,10 @@ function renderAdmin(list) {
     });
     elBtn = $("<button>Spara listan till favoriter</button>");
     elBtn.on("click", function() {
-        var memberId, listId, matches,
-            url = document.location.href;
+        var listUrl = document.location.href,
             title = $("h1").text();
-        matches = /\bmember=(\d+).*?\bpackage=(\d+)/.exec(url);
-        memberId = matches[1];
-        listId = matches[2];
-        list.addList(listId, memberId, title, elCol.val());
+
+        list.addList(listUrl, title, elCol.val());
         $("<span>Sparad</span>")
             .css({
                 "color": "green",
@@ -222,7 +201,7 @@ function renderList(aList) {
 
     if ($.isEmptyObject(lists)) {
         $("<li class='rightlink'>")
-            .text('Gå till en lista för att lägga till den.')
+            .text("Gå till en lista för att lägga till den.")
             .appendTo(ul);
     }
 
@@ -233,7 +212,7 @@ function renderList(aList) {
         }
         l = lists[listId];
         li = $("<li class='rightlink'>");
-        var title = l.objects.length + " filmer, Uppdaterad " +
+        title = l.objects.length + " filmer, Uppdaterad " +
              new Date(l.lastUpdate).toLocaleString();
         li.attr("title", title).appendTo(ul);
         $("<a>").text(l.title).attr("href", l.url).appendTo(li);
