@@ -213,7 +213,7 @@ function renderList(aList) {
         l = lists[listId];
         li = $("<li class='rightlink'>");
         title = l.objects.length + " filmer, Uppdaterad " +
-             new Date(l.lastUpdate).toLocaleString();
+             new Date(l.lastUpdate).toISOString().slice(0, 19).replace('T', ' ');
         li.attr("title", title).appendTo(ul);
         $("<a>").text(l.title).attr("href", l.url).appendTo(li);
         $("<div class='in-list-admin'></div>")
