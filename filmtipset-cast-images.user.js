@@ -5,6 +5,7 @@
 // @version        0.2
 // @include        http://www.filmtipset.se/film/*
 // @include        http://nyheter24.se/filmtipset/film/*
+// @grant GM_xmlhttpRequest
 // ==/UserScript==
 (function( document ) {
 "use strict";

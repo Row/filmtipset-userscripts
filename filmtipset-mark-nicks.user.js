@@ -4,6 +4,10 @@
 // @description  Mark your own and friends names with a little square.
 // @namespace  https://github.com/Row/filmtipset-userscripts
 // @include        http://nyheter24.se/filmtipset/*
+// @grant GM_xmlhttpRequest
+// @grant GM_getValue
+// @grant GM_setValue
+// @grant GM_info
 // ==/UserScript==
 
 function isChrome()
