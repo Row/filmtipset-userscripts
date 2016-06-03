@@ -2,8 +2,7 @@
 // @name           Filmtipset Custom Search Links
 // @namespace      none
 // @description    Adds custom search links on each movie page. Edit the code to add and remove links.
-// @version        0.1
-// @include        http://www.filmtipset.se/film/*
+// @version        0.1.1
 // @include        http://www.filmtipset.se/film/*
 // ==/UserScript==
 

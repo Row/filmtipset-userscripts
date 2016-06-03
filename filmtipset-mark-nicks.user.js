@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Filmtipset mark nicks.
-// @version        0.3
+// @version        0.3.1
 // @description  Mark your own and friends names with a little square.
 // @namespace  https://github.com/Row/filmtipset-userscripts
 // @include        http://www.filmtipset.se/*

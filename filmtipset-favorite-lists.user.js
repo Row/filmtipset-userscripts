@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       Filmtipset favorite lists
 // @namespace  https://github.com/Row/filmtipset-userscripts
-// @version    2.0
+// @version    2.0.1
 // @description Filmtipset favorite lists makes it possible to select movie lists and assign them custom colors. Colored markings are then placed on the movies, if they belong to the specific list.
 // @match      http://www.filmtipset.se/*
 // @copyright  2016+, Row

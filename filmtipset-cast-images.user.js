@@ -2,8 +2,7 @@
 // @name           Filmtipset Cast Images
 // @namespace      https://github.com/Row/filmtipset-userscripts
 // @description    Displays small actor images on each movie page on filmtipset.se
-// @version        0.2
-// @include        http://www.filmtipset.se/film/*
+// @version        0.2.1
 // @include        http://www.filmtipset.se/film/*
 // @grant GM_xmlhttpRequest
 // ==/UserScript==

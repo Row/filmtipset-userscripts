@@ -2,7 +2,7 @@
 // @name           Filmtipset copy & paste field for filmtipset forum
 // @namespace      https://github.com/Row/filmtipset-userscripts
 // @description    Adds a input field on each movie page with link code for the forum.
-// @include        http://www.filmtipset.se/film/*
+// @version        0.1.1
 // @include        http://www.filmtipset.se/film/*
 // ==/UserScript==
 
