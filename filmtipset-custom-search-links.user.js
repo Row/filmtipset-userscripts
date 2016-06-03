@@ -4,7 +4,7 @@
 // @description    Adds custom search links on each movie page. Edit the code to add and remove links.
 // @version        0.1
 // @include        http://www.filmtipset.se/film/*
-// @include        http://nyheter24.se/filmtipset/film/*
+// @include        http://www.filmtipset.se/film/*
 // ==/UserScript==
 
 

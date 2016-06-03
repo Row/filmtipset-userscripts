@@ -3,7 +3,7 @@
 // @version        0.3
 // @description  Mark your own and friends names with a little square.
 // @namespace  https://github.com/Row/filmtipset-userscripts
-// @include        http://nyheter24.se/filmtipset/*
+// @include        http://www.filmtipset.se/*
 // @grant GM_xmlhttpRequest
 // @grant GM_getValue
 // @grant GM_setValue
@@ -77,7 +77,7 @@ function FriendHandler()
     this.checkUpdate = function()
     {
         var nextUpdate = + GM_getValue("filmtipsetNextFriendUpdate");
-        var url = 'http://nyheter24.se/filmtipset/yourpage.cgi?page=friends_online';
+        var url = 'http://www.filmtipset.se/yourpage.cgi?page=friends_online';
         var now = new Date().getTime();
         if(nextUpdate < now || !nextUpdate) {
             get(url, updateFriends);

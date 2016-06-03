@@ -4,7 +4,7 @@
 // @description    Displays small actor images on each movie page on filmtipset.se
 // @version        0.2
 // @include        http://www.filmtipset.se/film/*
-// @include        http://nyheter24.se/filmtipset/film/*
+// @include        http://www.filmtipset.se/film/*
 // @grant GM_xmlhttpRequest
 // ==/UserScript==
 (function( document ) {
